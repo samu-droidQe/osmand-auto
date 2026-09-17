@@ -262,6 +262,7 @@ public class MapActivity extends OsmandActionBarActivity implements DownloadEven
 		supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
 		setRequestedOrientation(AndroidUiHelper.getScreenOrientation(this));
 		super.onCreate(savedInstanceState);
+        initQuickFavoritesBar();
 		registerMapBackPressedCallback();
 		getSupportFragmentManager().registerFragmentLifecycleCallbacks(fragmentLifecycleCallbacks, true);
 		getSupportFragmentManager().addOnBackStackChangedListener(this::updateBackPressedCallbackState);
@@ -1891,5 +1892,18 @@ private void initQuickFavoritesBar() {
         recyclerView.setVisibility(android.view.View.VISIBLE);
     } else {
         recyclerView.setVisibility(android.view.View.GONE);
+    }
+    private void initQuickFavoritesBar() {
+        try {
+            androidx.recyclerview.widget.RecyclerView rv = findViewById(R.id.quickFavoritesRecyclerView);
+            if (rv != null) {
+                rv.setLayoutManager(new androidx.recyclerview.widget.LinearLayoutManager(this, androidx.recyclerview.widget.LinearLayoutManager.HORIZONTAL, false));
+                List<FavouritePoint> favorites = getMyApplication().getFavorites().getFavouritePoints();
+                QuickFavoritesAdapter adapter = new QuickFavoritesAdapter(favorites, fav -> {
+                    getMapView().getAnimatedDraggingThread().startMoving(fav.getLatitude(), fav.getLongitude(), getMapView().getZoom(), true);
+                });
+                rv.setAdapter(adapter);
+            }
+        } catch (Exception ignored) {}
     }
 }
