@@ -34,7 +34,7 @@ public class QuickFavoritesAdapter extends RecyclerView.Adapter<QuickFavoritesAd
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         FavouritePoint favorite = favorites.get(position);
-        holder.favName.setText(favorite.getName());
+        holder.nameTextView.setText(favorite.getDisplayName(holder.itemView.getContext()));
         holder.itemView.setOnClickListener(v -> {
             if (listener != null) {
                 listener.onFavoriteClick(favorite);
@@ -48,11 +48,11 @@ public class QuickFavoritesAdapter extends RecyclerView.Adapter<QuickFavoritesAd
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView favName;
+        TextView nameTextView;
 
-        ViewHolder(@NonNull View itemView) {
+        ViewHolder(View itemView) {
             super(itemView);
-            favName = itemView.findViewById(R.id.favName);
+            nameTextView = itemView.findViewById(R.id.favoriteName);
         }
     }
 }
