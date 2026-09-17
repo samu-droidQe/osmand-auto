@@ -153,6 +153,11 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import androidx.recyclerview.widget.RecyclerView;
+import net.osmand.plus.views.QuickFavoritesAdapter;
+import net.osmand.FavouritePoint;
+import net.osmand.plus.FavouritesDbHelper;
+import java.util.List;
 public class MapActivity extends OsmandActionBarActivity implements DownloadEvents,
 		IRouteInformationListener, AMapPointUpdateListener, MapMarkerChangedListener,
 		OnDrawMapListener, OsmAndAppCustomizationListener, LockUIAdapter,
@@ -251,6 +256,7 @@ public class MapActivity extends OsmandActionBarActivity implements DownloadEven
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
+        initQuickFavoritesBar();
 		long time = System.currentTimeMillis();
 		app.applyTheme(this);
 		supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -1866,4 +1872,24 @@ public class MapActivity extends OsmandActionBarActivity implements DownloadEven
 	public void onInAppPurchaseItemPurchased(String sku) {
 		getMapLayers().getRouteLayer().resetColorAvailabilityCache();
 	}
+}
+
+// Quick Favorites Integration
+private void initQuickFavoritesBar() {
+    RecyclerView recyclerView = findViewById(R.id.quickFavoritesRecyclerView);
+    if (recyclerView == null) return;
+
+    FavouritesDbHelper favHelper = getMyApplication().getFavorites();
+    List<FavouritePoint> favorites = favHelper.getFavouritePoints();
+
+    if (favorites != null && !favorites.isEmpty()) {
+        QuickFavoritesAdapter adapter = new QuickFavoritesAdapter(favorites, favorite -> {
+            getMapView().setLatLon(favorite.getLatitude(), favorite.getLongitude());
+            getMapView().setZoom(16);
+        });
+        recyclerView.setAdapter(adapter);
+        recyclerView.setVisibility(android.view.View.VISIBLE);
+    } else {
+        recyclerView.setVisibility(android.view.View.GONE);
+    }
 }
