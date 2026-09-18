@@ -60,7 +60,7 @@ jobs:
       - name: Build with Gradle
         run: |
           cd android
-          ./gradlew clean :OsmAnd-java:assemble :OsmAnd:assembleNightlyFreeLegacyFatDebug -Dorg.gradle.jvmargs="-Xmx4g -XX:MaxMetaspaceSize=512m" --no-daemon
+          ./gradlew clean compileNightlyFreeLegacyFatDebugJavaWithJavac assembleNightlyFreeLegacyFatDebug -Dorg.gradle.jvmargs="-Xmx4g -XX:MaxMetaspaceSize=512m" --no-daemon
 
       - name: Archive APK
         uses: actions/upload-artifact@v4
